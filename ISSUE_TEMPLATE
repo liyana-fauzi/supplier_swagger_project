@@ -1,20 +1,19 @@
----Template---
+**As a** ... 
+**I need** ...
+**So that** ...
 
-As a <some role>
-I need <some function>
-So that <i get some benefit> 
+**Assumptions:**
+*...
 
-Assumptions
-- List any assumptions about how to implement the Story
-Acceptance Criteria
-- Define what it means to be "done"
+**Acceptance Criteria:**
+...
 
----End of Template---
+Given...
+When...
+Then...
+....
 
-
-
----Example---
-
+---EXAMPLE---
 Make the hit counter persistently survive service restarts
 
 As a User
@@ -31,4 +30,4 @@ And		I	restart	the	hit	counter	services
 And		I	call	the	hit	counter	URL																				
 Then	I	should	see	3	returned	from	the	service	
 
----End of Example---
+---End of EXAMPLE---
