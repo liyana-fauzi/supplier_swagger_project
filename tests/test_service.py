@@ -1,5 +1,5 @@
 """
-<your resource name> API Service Test Suite
+Suppliers API Service Test Suite
 
 Test cases can be run with the following:
   nosetests -v --with-spec --spec-color

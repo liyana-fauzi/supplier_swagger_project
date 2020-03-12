@@ -1,10 +1,12 @@
 """
-Models for <your resource name>
+Models for Supplier
 
 All of the models are stored in this module
 """
 import logging
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+
 
 logger = logging.getLogger("flask.app")
 
@@ -15,24 +17,52 @@ class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
     pass
 
-
-class YourResourceModel(db.Model):
+class Products(db.Model):
     """
-    Class that represents a <your resource model name>
+    Class that represents a Supplier
     """
 
     app = None
 
     # Table Schema
+    __tablename__ = 'Products'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63))
+    desc = db.Column(db.String(256))
+    wholesale_price = db.Column(db.Integer)
+    quantity = db.Column(db.Integer)
+
+    supplier_id = db.Column(db.Integer, db.ForeignKey('Suppliers.id'), nullable = False)
+    
+ 
+    def __repr__(self):
+        return "<product %r id=[%s]>" % (self.name, self.id)
+
+
+class Suppliers(db.Model):
+    """
+    Class that represents a Supplier
+    """
+
+    app = None
+
+    # Table Schema
+    __tablename__ = 'Suppliers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(63))
+    category = db.Column(db.String(63))
+    address = db.Column(db.String(128))
+    email = db.Column(db.String(63))
+    phone_number = db.Column(db.String(12))
+    product_list = relationship('Products', order_by = Products.id, backref=db.backref('supplier_id'))
+
 
     def __repr__(self):
-        return "<<your resource name> %r id=[%s]>" % (self.name, self.id)
+        return "<supplier %r id=[%s]>" % (self.name, self.id)
 
     def create(self):
         """
-        Creates a <your resource name> to the database
+        Creates a Supplier to the database
         """
         logger.info("Creating %s", self.name)
         self.id = None  # id must be none to generate next primary key
@@ -41,38 +71,48 @@ class YourResourceModel(db.Model):
 
     def save(self):
         """
-        Updates a <your resource name> to the database
+        Updates a Supplier to the database
         """
         logger.info("Saving %s", self.name)
         db.session.commit()
 
     def delete(self):
-        """ Removes a <your resource name> from the data store """
+        """ Removes a Supplier from the data store """
         logger.info("Deleting %s", self.name)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a <your resource name> into a dictionary """
+        """ Serializes a Supplier into a dictionary """
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "category": self.category,
+            "address":self.address,
+            "email":self.email,
+            "phone_number":self.phone_number,
+            "product_list":self.product_list
         }
 
     def deserialize(self, data):
         """
-        Deserializes a <your resource name> from a dictionary
+        Deserializes a Supplier from a dictionary
 
         Args:
             data (dict): A dictionary containing the resource data
         """
         try:
             self.name = data["name"]
+            self.category = data["category"]
+            self.address = data["address"]
+            self.email = data["email"]
+            self.phone_number = data.get("phone_number")
+            self.product_list = data["product_list"]
         except KeyError as error:
-            raise DataValidationError("Invalid <your resource name>: missing " + error.args[0])
+            raise DataValidationError("Invalid Supplier: missing " + error.args[0])
         except TypeError as error:
             raise DataValidationError(
-                "Invalid <your resource name>: body of request contained" "bad or no data"
+                "Invalid Supplier: body of request contained" "bad or no data"
             )
         return self
 
@@ -88,28 +128,30 @@ class YourResourceModel(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the <your resource name>s in the database """
-        logger.info("Processing all <your resource name>s")
+        """ Returns all of the Suppliers in the database """
+        logger.info("Processing all Suppliers")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """ Finds a <your resource name> by it's ID """
+        """ Finds a Supplier by it's ID """
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 
     @classmethod
     def find_or_404(cls, by_id):
-        """ Find a <your resource name> by it's id """
+        """ Find a Supplier by it's id """
         logger.info("Processing lookup or 404 for id %s ...", by_id)
         return cls.query.get_or_404(by_id)
 
     @classmethod
     def find_by_name(cls, name):
-        """ Returns all <your resource name>s with the given name
+        """ Returns all Suppliers with the given name
 
         Args:
-            name (string): the name of the <your resource name>s you want to match
+            name (string): the name of the Suppliers you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
+
+
