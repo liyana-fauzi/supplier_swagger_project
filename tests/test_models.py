@@ -1,5 +1,5 @@
 """
-Test cases for <your resource name> Model
+Test cases for Suppliers Model
 
 """
 import logging
@@ -13,10 +13,10 @@ DATABASE_URI = os.getenv(
 )
 
 ######################################################################
-#  <your resource name>   M O D E L   T E S T   C A S E S
+#  S U P P L I E R S   M O D E L   T E S T   C A S E S
 ######################################################################
 class TestSuppliers(unittest.TestCase):
-    """ Test Cases for <your resource name> Model """
+    """ Test Cases for Suppliers Model """
 
     @classmethod
     def setUpClass(cls):
@@ -26,7 +26,6 @@ class TestSuppliers(unittest.TestCase):
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
         Suppliers.init_db(app)
-        
 
     @classmethod
     def tearDownClass(cls):
@@ -37,13 +36,11 @@ class TestSuppliers(unittest.TestCase):
         """ This runs before each test """
         db.drop_all()  # clean up the last tests
         db.create_all()  # make our sqlalchemy tables
-        
 
     def tearDown(self):
         """ This runs after each test """
         db.session.remove()
         db.drop_all()
-        
 
 ######################################################################
 #  P L A C E   T E S T   C A S E S   H E R E 
