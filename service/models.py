@@ -154,4 +154,4 @@ class Suppliers(db.Model):
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
 
-
+    #whoever is doing the query story should create more query model
