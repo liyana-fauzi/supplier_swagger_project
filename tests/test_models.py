@@ -5,8 +5,9 @@ Test cases for Suppliers Model
 import logging
 import unittest
 import os
-from service.models import Suppliers, DataValidationError, db
+from service.models import Suppliers, Products, DataValidationError, db
 from service import app
+from tests.factories import SupplierFactory, ProductFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
@@ -43,9 +44,92 @@ class TestSuppliers(unittest.TestCase):
         db.drop_all()
 
 ######################################################################
+#  H E L P E R   M E T H O D S
+######################################################################
+
+    def _create_supplier(self, products=[]):
+        """ Creates a supplier from a Factory """
+        fake_supplier = SupplierFactory()
+        supplier = Suppliers(
+            name=fake_supplier.name, 
+            category = fake_supplier.category,
+            address = fake_supplier.address,
+            email=fake_supplier.email, 
+            phone_number=fake_supplier.phone_number, 
+            products = products
+        )
+        self.assertTrue(supplier != None)
+        self.assertEqual(supplier.id, None)
+        return supplier
+
+    def _create_product(self):
+        """ Creates fake product from factory """
+        fake_product = ProductFactory()
+        product = Products(
+            name=fake_product.name,
+            desc=fake_product.desc,
+            wholesale_price=fake_product.wholesale_price,
+            quantity=fake_product.quantity
+        )
+        self.assertTrue(product != None)
+        self.assertEqual(product.id, None)
+        return product
+
+######################################################################
 #  P L A C E   T E S T   C A S E S   H E R E 
 ######################################################################
 
-    def test_XXXX(self):
-        """ Test something """
-        self.assertTrue(True)
+    def test_create_a_supplier(self):
+        """ Create a Supplier and assert that it exists """
+        fake_supplier = SupplierFactory()
+        supplier = Suppliers(
+            name=fake_supplier.name, 
+            category = fake_supplier.category,
+            address = fake_supplier.address,
+            email=fake_supplier.email, 
+            phone_number=fake_supplier.phone_number, 
+            
+        )
+        self.assertTrue(supplier != None)
+        self.assertEqual(supplier.id, None)
+        self.assertEqual(supplier.name, fake_supplier.name)
+        self.assertEqual(supplier.address, fake_supplier.address)
+        self.assertEqual(supplier.email, fake_supplier.email)
+        self.assertEqual(supplier.phone_number, fake_supplier.phone_number)
+        
+
+    def test_add_a_supplier(self):
+        """ Create a Supplier and add it to the database """
+        suppliers = Suppliers.all()
+        self.assertEqual(suppliers, [])
+        supplier = self._create_supplier()
+        supplier.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertEqual(supplier.id, 1)
+        suppliers = Suppliers.all()
+        self.assertEqual(len(suppliers), 1)
+
+    def test_add_supplier_product(self):
+        """ Create a Supplier with a product and add it to the database """
+        suppliers = Suppliers.all()
+        self.assertEqual(suppliers, [])
+        supplier = self._create_supplier()
+        product = self._create_product()
+        supplier.products.append(product)
+        supplier.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertEqual(supplier.id, 1)
+        suppliers = Suppliers.all()
+        self.assertEqual(len(suppliers), 1)
+
+        new_supplier = Suppliers.find(supplier.id)
+        self.assertEqual(supplier.products[0].name, product.name)
+
+        product2 = self._create_product()
+        supplier.products.append(product2)
+        supplier.save()
+
+        new_supplier = Suppliers.find(supplier.id)
+        self.assertEqual(len(supplier.products), 2)
+        self.assertEqual(supplier.products[1].name, product2.name)
+    

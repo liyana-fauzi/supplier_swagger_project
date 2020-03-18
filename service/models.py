@@ -17,6 +17,10 @@ class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
     pass
 
+######################################################################
+#  P R O D U C T S   M O D E L
+######################################################################
+
 class Products(db.Model):
     """
     Class that represents a Supplier
@@ -38,6 +42,46 @@ class Products(db.Model):
     def __repr__(self):
         return "<product %r id=[%s]>" % (self.name, self.id)
 
+    def __str__(self):
+        return "%s: %s, %s, %s %s" % (self.name, self.street, self.city, self.state, self.postalcode)
+
+    def serialize(self):
+        """ Serializes a Product into a dictionary """
+        return {
+            "id": self.id,
+            "supplier_id": self.supplier_id,
+            "name": self.name,
+            "desc": self.desc,
+            "wholesale_price": self.wholesale_price,
+            "quantity": self.quantity,
+        }
+
+    def deserialize(self, data):
+        """
+        Deserializes a Product from a dictionary
+        Args:
+            data (dict): A dictionary containing the resource data
+        """
+        try:
+            self.supplier_id = data["supplier_id"]
+            self.name = data["name"]
+            self.desc = data["desc"]
+            self.wholesale_price = data["wholesale_price"]
+            self.quantity = data["quantity"]
+            
+        except KeyError as error:
+            raise DataValidationError("Invalid Product: missing " + error.args[0])
+        except TypeError as error:
+            raise DataValidationError(
+                "Invalid Product: body of request contained" "bad or no data"
+            )
+        return self
+
+
+#####################################################################
+#  S U P P L I E R S   M O D E L
+######################################################################
+
 
 class Suppliers(db.Model):
     """
@@ -53,8 +97,8 @@ class Suppliers(db.Model):
     category = db.Column(db.String(63))
     address = db.Column(db.String(128))
     email = db.Column(db.String(63))
-    phone_number = db.Column(db.String(12))
-    product_list = relationship('Products', order_by = Products.id, backref=db.backref('supplier_id'))
+    phone_number = db.Column(db.String(32))
+    products = relationship('Products', order_by = Products.id, backref=db.backref('Suppliers'), lazy=True)
 
 
     def __repr__(self):
@@ -84,15 +128,18 @@ class Suppliers(db.Model):
 
     def serialize(self):
         """ Serializes a Supplier into a dictionary """
-        return {
+        supplier = {
             "id": self.id,
             "name": self.name,
             "category": self.category,
             "address":self.address,
             "email":self.email,
             "phone_number":self.phone_number,
-            "product_list":self.product_list
+            "products": []
         }
+        for product in self.products:
+            supplier['products'].append(product.serialize())
+        return supplier
 
     def deserialize(self, data):
         """
@@ -107,7 +154,12 @@ class Suppliers(db.Model):
             self.address = data["address"]
             self.email = data["email"]
             self.phone_number = data.get("phone_number")
-            self.product_list = data["product_list"]
+            #handle inner list of products
+            product_list = data["products"]
+            for json_product in product_list:
+                product = Products()
+                product.deserialize(json_product)
+                self.products.append(product)
         except KeyError as error:
             raise DataValidationError("Invalid Supplier: missing " + error.args[0])
         except TypeError as error:
