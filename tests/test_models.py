@@ -133,3 +133,23 @@ class TestSuppliers(unittest.TestCase):
         self.assertEqual(len(supplier.products), 2)
         self.assertEqual(supplier.products[1].name, product2.name)
     
+
+    def test_update_a_supplier(self):
+        """ Update a Supplier """
+        supplier = SupplierFactory()
+        logging.debug(supplier)
+        supplier.create()
+        logging.debug(supplier)
+        self.assertEqual(supplier.id, 1)
+        # Change it an save it
+        supplier.category = "suppliers"
+        original_id = supplier.id
+        supplier.save()
+        self.assertEqual(supplier.id, original_id)
+        self.assertEqual(supplier.category, "suppliers")
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        suppliers = Suppliers.all()
+        self.assertEqual(len(suppliers), 1)
+        self.assertEqual(suppliers[0].id, 1)
+        self.assertEqual(suppliers[0].category, "suppliers")
