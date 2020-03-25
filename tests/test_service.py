@@ -173,3 +173,17 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_supplier = resp.get_json()
         self.assertEqual(updated_supplier["category"], "unknown")
+
+    def test_delete_supplier(self):
+        """ Delete a Supplier """
+        test_supplier = self._create_suppliers(1)[0]
+        resp = self.app.delete(
+            "/suppliers/{}".format(test_supplier.id), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get(
+            "/suppliers/{}".format(test_supplier.id), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)

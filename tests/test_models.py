@@ -153,3 +153,12 @@ class TestSuppliers(unittest.TestCase):
         self.assertEqual(len(suppliers), 1)
         self.assertEqual(suppliers[0].id, 1)
         self.assertEqual(suppliers[0].category, "suppliers")
+
+    def test_delete_a_supplier(self):
+        """ Delete a Supplier """
+        supplier = SupplierFactory()
+        supplier.create()
+        self.assertEqual(len(Suppliers.all()), 1)
+        # delete the supplier and make sure it isn't in the database
+        supplier.delete()
+        self.assertEqual(len(Suppliers.all()), 0)
