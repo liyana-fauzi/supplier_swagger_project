@@ -142,6 +142,7 @@ class TestYourResourceServer(TestCase):
 
         #TODO: when get_supplier (READ SUPPLIER) is implemented , remove the commented code below
         # # Check that the location header was correct by getting it
+
         #resp = self.app.get(location, content_type="application/json")
         #self.assertEqual(resp.status_code, status.HTTP_200_OK)
         #new_supplier = resp.get_json()
@@ -151,3 +152,24 @@ class TestYourResourceServer(TestCase):
         #self.assertEqual(new_supplier["email"], supplier.email, "Email does not match")
         #self.assertEqual(new_supplier["phone_number"], supplier.phone_number, "Phone does not match")
         #self.assertEqual(new_supplier["products"], str(supplier.products), "Products does not match")
+
+    def test_update_supplier(self):
+        """ Update an existing Supplier """
+        # create a supplier to update
+        test_supplier = SupplierFactory()
+        resp = self.app.post(
+            "/suppliers", json=test_supplier.serialize(), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # update the supplier
+        new_supplier = resp.get_json()
+        new_supplier["category"] = "unknown"
+        resp = self.app.put(
+            "/suppliers/{}".format(new_supplier["id"]),
+            json=new_supplier,
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_supplier = resp.get_json()
+        self.assertEqual(updated_supplier["category"], "unknown")
