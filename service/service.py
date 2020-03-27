@@ -13,7 +13,7 @@ from flask_api import status  # HTTP Status Codes
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-from service.models import Supplier, DataValidationError, Products
+from service.models import Supplier, DataValidationError, Product
 
 # Import Flask application
 from . import app
@@ -211,7 +211,7 @@ def create_products(supplier_id):
     app.logger.info("Request to add an product to an supplier")
     check_content_type("application/json")
     supplier = Suppliers.find_or_404(supplier_id)
-    product = Products()
+    product = Product()
     product.deserialize(request.get_json())
     supplier.products.append(product)
     supplier.save()
@@ -229,7 +229,7 @@ def get_products(supplier_id, product_id):
     This endpoint returns just a product
     """
     app.logger.info("Request to get a product with id: %s", product_id)
-    product = Products.find_or_404(product_id)
+    product = Product.find_or_404(product_id)
     return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
 
 ######################################################################
@@ -244,7 +244,7 @@ def update_products(supplier_id, product_id):
     """
     app.logger.info("Request to update product with id: %s", product_id)
     check_content_type("application/json")
-    product = Products.find_or_404(product_id)
+    product = Product.find_or_404(product_id)
     product.deserialize(request.get_json())
     product.id = product_id
     product.save()

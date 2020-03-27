@@ -5,7 +5,7 @@ Test cases for Supplier Model
 import logging
 import unittest
 import os
-from service.models import Supplier, Products, DataValidationError, db
+from service.models import Supplier, Product, DataValidationError, db
 from service import app
 from tests.factories import SupplierFactory, ProductFactory
 
@@ -65,7 +65,7 @@ class TestSupplier(unittest.TestCase):
     def _create_product(self):
         """ Creates fake product from factory """
         fake_product = ProductFactory()
-        product = Products(
+        product = Product(
             name=fake_product.name,
             desc=fake_product.desc,
             wholesale_price=fake_product.wholesale_price,

@@ -138,7 +138,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_supplier["address"], supplier.address, "Address does not match")
         self.assertEqual(new_supplier["email"], supplier.email, "Email does not match")
         self.assertEqual(new_supplier["phone_number"], supplier.phone_number, "Phone does not match")
-        self.assertEqual(new_supplier["products"], supplier.products, "Products does not match")
+        self.assertEqual(new_supplier["products"], supplier.products, "Product does not match")
 
         resp = self.app.get(location, content_type="application/json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -148,7 +148,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_supplier["address"], supplier.address, "Address does not match")
         self.assertEqual(new_supplier["email"], supplier.email, "Email does not match")
         self.assertEqual(new_supplier["phone_number"], supplier.phone_number, "Phone does not match")
-        self.assertEqual(new_supplier["products"], (supplier.products), "Products does not match")
+        self.assertEqual(new_supplier["products"], (supplier.products), "Product does not match")
 
     def test_update_supplier(self):
         """ Update an existing Supplier """

@@ -78,7 +78,7 @@ class PersistentBase():
 #  P R O D U C T S   M O D E L
 ######################################################################
 
-class Products(db.Model, PersistentBase):
+class Product(db.Model, PersistentBase):
     """
     Class that represents a Supplier
     """
@@ -86,7 +86,7 @@ class Products(db.Model, PersistentBase):
     app = None
 
     # Table Schema
-    __tablename__ = 'Products'
+    __tablename__ = 'Product'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63))
     desc = db.Column(db.String(256))
@@ -156,7 +156,7 @@ class Supplier(db.Model, PersistentBase):
     address = db.Column(db.String(128))
     email = db.Column(db.String(63))
     phone_number = db.Column(db.String(32))
-    products = relationship('Products', order_by = Products.id, backref=db.backref('Supplier'), lazy=True)
+    products = relationship('Product', order_by = Product.id, backref=db.backref('Supplier'), lazy=True)
 
 
     def __repr__(self):
@@ -193,7 +193,7 @@ class Supplier(db.Model, PersistentBase):
             #handle inner list of products
             product_list = data["products"]
             for json_product in product_list:
-                product = Products()
+                product = Product()
                 product.deserialize(json_product)
                 self.products.append(product)
         except KeyError as error:
