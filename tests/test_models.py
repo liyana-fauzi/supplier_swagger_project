@@ -162,3 +162,44 @@ class TestSupplier(unittest.TestCase):
         # delete the supplier and make sure it isn't in the database
         supplier.delete()
         self.assertEqual(len(Supplier.all()), 0)
+
+    def test_find_or_404(self):
+        """ Find or throw 404 error """
+        supplier = self._create_supplier()
+        supplier.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertEqual(supplier.id, 1)
+
+        # Fetch it back
+        supplier = Supplier.find_or_404(supplier.id)
+        self.assertEqual(supplier.id, 1)
+
+
+    def test_update_supplier_product(self):
+        """ Update an suppliers product """
+        suppliers = Supplier.all()
+        self.assertEqual(suppliers, [])
+
+        product = self._create_product()
+        supplier = self._create_supplier(products=[product])
+        supplier.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertEqual(supplier.id, 1)
+        suppliers = Supplier.all()
+        self.assertEqual(len(suppliers), 1)
+
+        # Fetch it back
+        supplier = Supplier.find(supplier.id)
+        old_product = supplier.products[0]
+        self.assertEqual(old_product.desc, product.desc)
+
+        old_product.desc = "XX"
+        supplier.save()
+
+        # Fetch it back again
+        supplier = Supplier.find(supplier.id)
+        product = supplier.products[0]
+        self.assertEqual(product.desc, "XX")
+
+    
+

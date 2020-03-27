@@ -18,10 +18,67 @@ class DataValidationError(Exception):
     pass
 
 ######################################################################
+#  P E R S I S T E N T   B A S E   M O D E L
+######################################################################
+class PersistentBase():
+    """ Base class added persistent methods """
+
+    def create(self):
+        """
+        Creates a Supplier to the database
+        """
+        logger.info("Creating %s", self.name)
+        self.id = None  # id must be none to generate next primary key
+        db.session.add(self)
+        db.session.commit()
+
+    def save(self):
+        """
+        Updates a Supplier to the database
+        """
+        logger.info("Saving %s", self.name)
+        db.session.commit()
+
+    def delete(self):
+        """ Removes a Supplier from the data store """
+        logger.info("Deleting %s", self.name)
+        db.session.delete(self)
+        db.session.commit()
+    
+    @classmethod
+    def init_db(cls, app):
+        """ Initializes the database session """
+        logger.info("Initializing database")
+        cls.app = app
+        # This is where we initialize SQLAlchemy from the Flask app
+        db.init_app(app)
+        app.app_context().push()
+        db.create_all()  # make our sqlalchemy tables
+
+    @classmethod
+    def all(cls):
+        """ Returns all of the Suppliers in the database """
+        logger.info("Processing all Suppliers")
+        return cls.query.all()
+
+    @classmethod
+    def find(cls, by_id):
+        """ Finds a Supplier by it's ID """
+        logger.info("Processing lookup for id %s ...", by_id)
+        return cls.query.get(by_id)
+
+    @classmethod
+    def find_or_404(cls, by_id):
+        """ Find a Supplier by it's id """
+        logger.info("Processing lookup or 404 for id %s ...", by_id)
+        return cls.query.get_or_404(by_id)
+
+
+######################################################################
 #  P R O D U C T S   M O D E L
 ######################################################################
 
-class Products(db.Model):
+class Products(db.Model, PersistentBase):
     """
     Class that represents a Supplier
     """
@@ -83,7 +140,8 @@ class Products(db.Model):
 ######################################################################
 
 
-class Supplier(db.Model):
+class Supplier(db.Model, PersistentBase):
+
     """
     Class that represents a Supplier
     """
@@ -103,28 +161,6 @@ class Supplier(db.Model):
 
     def __repr__(self):
         return "<supplier %r id=[%s]>" % (self.name, self.id)
-
-    def create(self):
-        """
-        Creates a Supplier to the database
-        """
-        logger.info("Creating %s", self.name)
-        self.id = None  # id must be none to generate next primary key
-        db.session.add(self)
-        db.session.commit()
-
-    def save(self):
-        """
-        Updates a Supplier to the database
-        """
-        logger.info("Saving %s", self.name)
-        db.session.commit()
-
-    def delete(self):
-        """ Removes a Supplier from the data store """
-        logger.info("Deleting %s", self.name)
-        db.session.delete(self)
-        db.session.commit()
 
     def serialize(self):
         """ Serializes a Supplier into a dictionary """
@@ -167,34 +203,6 @@ class Supplier(db.Model):
                 "Invalid Supplier: body of request contained" "bad or no data"
             )
         return self
-
-    @classmethod
-    def init_db(cls, app):
-        """ Initializes the database session """
-        logger.info("Initializing database")
-        cls.app = app
-        # This is where we initialize SQLAlchemy from the Flask app
-        db.init_app(app)
-        app.app_context().push()
-        db.create_all()  # make our sqlalchemy tables
-
-    @classmethod
-    def all(cls):
-        """ Returns all of the Supplier in the database """
-        logger.info("Processing all Supplier")
-        return cls.query.all()
-
-    @classmethod
-    def find(cls, by_id):
-        """ Finds a Supplier by it's ID """
-        logger.info("Processing lookup for id %s ...", by_id)
-        return cls.query.get(by_id)
-
-    @classmethod
-    def find_or_404(cls, by_id):
-        """ Find a Supplier by it's id """
-        logger.info("Processing lookup or 404 for id %s ...", by_id)
-        return cls.query.get_or_404(by_id)
 
     @classmethod
     def find_by_name(cls, name):

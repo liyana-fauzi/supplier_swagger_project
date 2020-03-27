@@ -140,18 +140,15 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_supplier["phone_number"], supplier.phone_number, "Phone does not match")
         self.assertEqual(new_supplier["products"], supplier.products, "Products does not match")
 
-        #TODO: when get_supplier (READ SUPPLIER) is implemented , remove the commented code below
-        # # Check that the location header was correct by getting it
-
-        #resp = self.app.get(location, content_type="application/json")
-        #self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        #new_supplier = resp.get_json()
-        #self.assertEqual(new_supplier["name"], supplier.name, "Names does not match")
-        #self.assertEqual(new_supplier["category"], supplier.category, "Category does not match")
-        #self.assertEqual(new_supplier["address"], supplier.address, "Address does not match")
-        #self.assertEqual(new_supplier["email"], supplier.email, "Email does not match")
-        #self.assertEqual(new_supplier["phone_number"], supplier.phone_number, "Phone does not match")
-        #self.assertEqual(new_supplier["products"], str(supplier.products), "Products does not match")
+        resp = self.app.get(location, content_type="application/json")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_supplier = resp.get_json()
+        self.assertEqual(new_supplier["name"], supplier.name, "Names does not match")
+        self.assertEqual(new_supplier["category"], supplier.category, "Category does not match")
+        self.assertEqual(new_supplier["address"], supplier.address, "Address does not match")
+        self.assertEqual(new_supplier["email"], supplier.email, "Email does not match")
+        self.assertEqual(new_supplier["phone_number"], supplier.phone_number, "Phone does not match")
+        self.assertEqual(new_supplier["products"], (supplier.products), "Products does not match")
 
     def test_update_supplier(self):
         """ Update an existing Supplier """
@@ -187,3 +184,92 @@ class TestYourResourceServer(TestCase):
             "/suppliers/{}".format(test_supplier.id), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_bad_request(self):
+        """ Send wrong media type """
+        supplier = SupplierFactory()
+        resp = self.app.post(
+            "/suppliers", 
+            json={"name": "not enough data"}, 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unsupported_media_type(self):
+        """ Send wrong media type """
+        supplier = SupplierFactory()
+        resp = self.app.post(
+            "/suppliers", 
+            json=supplier.serialize(), 
+            content_type="test/html"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_method_not_allowed(self):
+        """ Make an illegal method call """
+        resp = self.app.put(
+            "/suppliers", 
+            json={"not": "today"}, 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+######################################################################
+#  A D D R E S S   T E S T   C A S E S
+######################################################################
+
+    def test_add_product(self):
+        """ Add an product to a supplier """
+        supplier = self._create_suppliers(1)[0]
+        product = ProductFactory()
+        resp = self.app.post(
+            "/suppliers/{}/products".format(supplier.id), 
+            json=product.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["supplier_id"], supplier.id)
+        self.assertEqual(data["name"], product.name)
+        self.assertEqual(data["desc"], product.desc)
+        self.assertEqual(data["wholesale_price"], product.wholesale_price)
+        self.assertEqual(data["quantity"], product.quantity)
+        
+    
+    def test_update_products(self):
+        """ Update a product on a supplier """
+        # create a known product
+        supplier = self._create_suppliers(1)[0]
+        product = ProductFactory()
+        resp = self.app.post(
+            "/suppliers/{}/products".format(supplier.id), 
+            json=product.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        data = resp.get_json()
+        logging.debug(data)
+        product_id = data["id"]
+        data["name"] = "XXXX"
+
+        # send the update back
+        resp = self.app.put(
+            "/suppliers/{}/products/{}".format(supplier.id, product_id), 
+            json=data, 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        # retrieve it back
+        resp = self.app.get(
+            "/suppliers/{}/products/{}".format(supplier.id, product_id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["id"], product_id)
+        self.assertEqual(data["supplier_id"], supplier.id)
+        self.assertEqual(data["name"], "XXXX")
