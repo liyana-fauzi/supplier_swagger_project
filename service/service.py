@@ -103,7 +103,7 @@ def index():
     """ Root URL response """
     return (
         jsonify(
-            name="Account REST API Service",
+            name="Suppliers REST API Service",
             version="1.0",
             paths=url_for("list_suppliers", _external=True),
         ),
@@ -193,6 +193,62 @@ def delete_suppliers(supplier_id):
     if suppliers:
         suppliers.delete()
     return make_response("", status.HTTP_204_NO_CONTENT)
+
+#---------------------------------------------------------------------
+#                P R O D U C T S   M E T H O D S
+#---------------------------------------------------------------------
+
+######################################################################
+# ADD AN ADDRESS TO AN ACCOUNT
+######################################################################
+@app.route('/suppliers/<int:supplier_id>/products', methods=['POST'])
+def create_products(supplier_id):
+    """
+    Create a Product on a Supplier
+
+    This endpoint will add a product to a supplier
+    """
+    app.logger.info("Request to add an product to an supplier")
+    check_content_type("application/json")
+    supplier = Suppliers.find_or_404(supplier_id)
+    product = Products()
+    product.deserialize(request.get_json())
+    supplier.products.append(product)
+    supplier.save()
+    message = product.serialize()
+    return make_response(jsonify(message), status.HTTP_201_CREATED)
+
+#####################################################################
+# RETRIEVE A PRODUCT FROM SUPPLIER
+######################################################################
+@app.route('/suppliers/<int:supplier_id>/products/<int:product_id>', methods=['GET'])
+def get_products(supplier_id, product_id):
+    """
+    Get a Product
+
+    This endpoint returns just a product
+    """
+    app.logger.info("Request to get a product with id: %s", product_id)
+    product = Products.find_or_404(product_id)
+    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# UPDATE A PRODUCT
+######################################################################
+@app.route("/suppliers/<int:supplier_id>/products/<int:product_id>", methods=["PUT"])
+def update_products(supplier_id, product_id):
+    """
+    Update a Product
+
+    This endpoint will update a Product based the body that is posted
+    """
+    app.logger.info("Request to update product with id: %s", product_id)
+    check_content_type("application/json")
+    product = Products.find_or_404(product_id)
+    product.deserialize(request.get_json())
+    product.id = product_id
+    product.save()
+    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
