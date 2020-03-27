@@ -1,5 +1,5 @@
 """
-Suppliers API Service Test Suite
+Supplier API Service Test Suite
 
 Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
@@ -22,7 +22,7 @@ DATABASE_URI = os.getenv(
 #  T E S T   C A S E S
 ######################################################################
 class TestYourResourceServer(TestCase):
-    """ Suppliers REST API Server Tests """
+    """ Supplier REST API Server Tests """
 
     @classmethod
     def setUpClass(cls):

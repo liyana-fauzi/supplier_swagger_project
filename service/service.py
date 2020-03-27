@@ -13,7 +13,7 @@ from flask_api import status  # HTTP Status Codes
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-from service.models import Suppliers, DataValidationError, Products
+from service.models import Supplier, DataValidationError, Products
 
 # Import Flask application
 from . import app
@@ -120,9 +120,9 @@ def list_suppliers():
     suppliers = []
     name = request.args.get("name")
     if name:
-        suppliers = Suppliers.find_by_name(name)
+        suppliers = Supplier.find_by_name(name)
     else:
-        suppliers = Suppliers.all()
+        suppliers = Supplier.all()
 
     results = [supplier.serialize() for supplier in suppliers]
     return make_response(jsonify(results), status.HTTP_200_OK)
@@ -137,7 +137,7 @@ def get_suppliers(supplier_id):
     This endpoint will return a Supplier based on it's id
     """
     app.logger.info("Request for Supplier with id: %s", supplier_id)
-    supplier = Suppliers.find_or_404(supplier_id)
+    supplier = Supplier.find_or_404(supplier_id)
     return make_response(jsonify(supplier.serialize()), status.HTTP_200_OK)
 
 ######################################################################
@@ -151,7 +151,7 @@ def create_suppliers():
     """
     app.logger.info("Request to create a Supplier")
     check_content_type("application/json")
-    supplier = Suppliers()
+    supplier = Supplier()
     supplier.deserialize(request.get_json())
     supplier.create()
     message = supplier.serialize()
@@ -171,7 +171,7 @@ def update_suppliers(supplier_id):
     """
     app.logger.info("Request to update supplier with id: %s", supplier_id)
     check_content_type("application/json")
-    supplier = Suppliers.find(supplier_id)
+    supplier = Supplier.find(supplier_id)
     if not supplier:
         raise NotFound("Supplier with id '{}' was not found.".format(supplier_id))
     supplier.deserialize(request.get_json())
@@ -189,7 +189,7 @@ def delete_suppliers(supplier_id):
     This endpoint will delete a Supplier based the id specified in the path
     """
     app.logger.info("Request to delete supplier with id: %s", supplier_id)
-    suppliers = Suppliers.find(supplier_id)
+    suppliers = Supplier.find(supplier_id)
     if suppliers:
         suppliers.delete()
     return make_response("", status.HTTP_204_NO_CONTENT)
@@ -257,7 +257,7 @@ def update_products(supplier_id, product_id):
 def init_db():
     """ Initialies the SQLAlchemy app """
     global app
-    Suppliers.init_db(app)
+    Supplier.init_db(app)
 
 def check_content_type(content_type):
     """ Checks that the media type is correct """

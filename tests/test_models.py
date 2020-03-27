@@ -1,11 +1,11 @@
 """
-Test cases for Suppliers Model
+Test cases for Supplier Model
 
 """
 import logging
 import unittest
 import os
-from service.models import Suppliers, Products, DataValidationError, db
+from service.models import Supplier, Products, DataValidationError, db
 from service import app
 from tests.factories import SupplierFactory, ProductFactory
 
@@ -16,8 +16,8 @@ DATABASE_URI = os.getenv(
 ######################################################################
 #  S U P P L I E R S   M O D E L   T E S T   C A S E S
 ######################################################################
-class TestSuppliers(unittest.TestCase):
-    """ Test Cases for Suppliers Model """
+class TestSupplier(unittest.TestCase):
+    """ Test Cases for Supplier Model """
 
     @classmethod
     def setUpClass(cls):
@@ -26,7 +26,7 @@ class TestSuppliers(unittest.TestCase):
         app.config['DEBUG'] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
-        Suppliers.init_db(app)
+        Supplier.init_db(app)
 
     @classmethod
     def tearDownClass(cls):
@@ -50,7 +50,7 @@ class TestSuppliers(unittest.TestCase):
     def _create_supplier(self, products=[]):
         """ Creates a supplier from a Factory """
         fake_supplier = SupplierFactory()
-        supplier = Suppliers(
+        supplier = Supplier(
             name=fake_supplier.name, 
             category = fake_supplier.category,
             address = fake_supplier.address,
@@ -82,7 +82,7 @@ class TestSuppliers(unittest.TestCase):
     def test_create_a_supplier(self):
         """ Create a Supplier and assert that it exists """
         fake_supplier = SupplierFactory()
-        supplier = Suppliers(
+        supplier = Supplier(
             name=fake_supplier.name, 
             category = fake_supplier.category,
             address = fake_supplier.address,
@@ -100,18 +100,18 @@ class TestSuppliers(unittest.TestCase):
 
     def test_add_a_supplier(self):
         """ Create a Supplier and add it to the database """
-        suppliers = Suppliers.all()
+        suppliers = Supplier.all()
         self.assertEqual(suppliers, [])
         supplier = self._create_supplier()
         supplier.create()
         # Assert that it was assigned an id and shows up in the database
         self.assertEqual(supplier.id, 1)
-        suppliers = Suppliers.all()
+        suppliers = Supplier.all()
         self.assertEqual(len(suppliers), 1)
 
     def test_add_supplier_product(self):
         """ Create a Supplier with a product and add it to the database """
-        suppliers = Suppliers.all()
+        suppliers = Supplier.all()
         self.assertEqual(suppliers, [])
         supplier = self._create_supplier()
         product = self._create_product()
@@ -119,17 +119,17 @@ class TestSuppliers(unittest.TestCase):
         supplier.create()
         # Assert that it was assigned an id and shows up in the database
         self.assertEqual(supplier.id, 1)
-        suppliers = Suppliers.all()
+        suppliers = Supplier.all()
         self.assertEqual(len(suppliers), 1)
 
-        new_supplier = Suppliers.find(supplier.id)
+        new_supplier = Supplier.find(supplier.id)
         self.assertEqual(supplier.products[0].name, product.name)
 
         product2 = self._create_product()
         supplier.products.append(product2)
         supplier.save()
 
-        new_supplier = Suppliers.find(supplier.id)
+        new_supplier = Supplier.find(supplier.id)
         self.assertEqual(len(supplier.products), 2)
         self.assertEqual(supplier.products[1].name, product2.name)
     
@@ -149,7 +149,7 @@ class TestSuppliers(unittest.TestCase):
         self.assertEqual(supplier.category, "suppliers")
         # Fetch it back and make sure the id hasn't changed
         # but the data did change
-        suppliers = Suppliers.all()
+        suppliers = Supplier.all()
         self.assertEqual(len(suppliers), 1)
         self.assertEqual(suppliers[0].id, 1)
         self.assertEqual(suppliers[0].category, "suppliers")
@@ -158,10 +158,10 @@ class TestSuppliers(unittest.TestCase):
         """ Delete a Supplier """
         supplier = SupplierFactory()
         supplier.create()
-        self.assertEqual(len(Suppliers.all()), 1)
+        self.assertEqual(len(Supplier.all()), 1)
         # delete the supplier and make sure it isn't in the database
         supplier.delete()
-        self.assertEqual(len(Suppliers.all()), 0)
+        self.assertEqual(len(Supplier.all()), 0)
 
     def test_find_or_404(self):
         """ Find or throw 404 error """
@@ -171,13 +171,13 @@ class TestSuppliers(unittest.TestCase):
         self.assertEqual(supplier.id, 1)
 
         # Fetch it back
-        supplier = Suppliers.find_or_404(supplier.id)
+        supplier = Supplier.find_or_404(supplier.id)
         self.assertEqual(supplier.id, 1)
 
 
     def test_update_supplier_product(self):
         """ Update an suppliers product """
-        suppliers = Suppliers.all()
+        suppliers = Supplier.all()
         self.assertEqual(suppliers, [])
 
         product = self._create_product()
@@ -185,11 +185,11 @@ class TestSuppliers(unittest.TestCase):
         supplier.create()
         # Assert that it was assigned an id and shows up in the database
         self.assertEqual(supplier.id, 1)
-        suppliers = Suppliers.all()
+        suppliers = Supplier.all()
         self.assertEqual(len(suppliers), 1)
 
         # Fetch it back
-        supplier = Suppliers.find(supplier.id)
+        supplier = Supplier.find(supplier.id)
         old_product = supplier.products[0]
         self.assertEqual(old_product.desc, product.desc)
 
@@ -197,8 +197,9 @@ class TestSuppliers(unittest.TestCase):
         supplier.save()
 
         # Fetch it back again
-        supplier = Suppliers.find(supplier.id)
+        supplier = Supplier.find(supplier.id)
         product = supplier.products[0]
         self.assertEqual(product.desc, "XX")
 
     
+
