@@ -1,5 +1,5 @@
 # suppliers
-NYU DevOps Project - Suppliers
+NYU DevOps Project - Supplier
 
 Project Brief
 The suppliers resource associates products with the vendor that supplies them to our business.

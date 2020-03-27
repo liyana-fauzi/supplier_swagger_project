@@ -36,7 +36,7 @@ class Products(db.Model):
     wholesale_price = db.Column(db.Integer)
     quantity = db.Column(db.Integer)
 
-    supplier_id = db.Column(db.Integer, db.ForeignKey('Suppliers.id'), nullable = False)
+    supplier_id = db.Column(db.Integer, db.ForeignKey('Supplier.id'), nullable = False)
     
  
     def __repr__(self):
@@ -83,7 +83,7 @@ class Products(db.Model):
 ######################################################################
 
 
-class Suppliers(db.Model):
+class Supplier(db.Model):
     """
     Class that represents a Supplier
     """
@@ -91,14 +91,14 @@ class Suppliers(db.Model):
     app = None
 
     # Table Schema
-    __tablename__ = 'Suppliers'
+    __tablename__ = 'Supplier'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63))
     category = db.Column(db.String(63))
     address = db.Column(db.String(128))
     email = db.Column(db.String(63))
     phone_number = db.Column(db.String(32))
-    products = relationship('Products', order_by = Products.id, backref=db.backref('Suppliers'), lazy=True)
+    products = relationship('Products', order_by = Products.id, backref=db.backref('Supplier'), lazy=True)
 
 
     def __repr__(self):
@@ -180,8 +180,8 @@ class Suppliers(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the Suppliers in the database """
-        logger.info("Processing all Suppliers")
+        """ Returns all of the Supplier in the database """
+        logger.info("Processing all Supplier")
         return cls.query.all()
 
     @classmethod
@@ -198,10 +198,10 @@ class Suppliers(db.Model):
 
     @classmethod
     def find_by_name(cls, name):
-        """ Returns all Suppliers with the given name
+        """ Returns all Supplier with the given name
 
         Args:
-            name (string): the name of the Suppliers you want to match
+            name (string): the name of the Supplier you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
