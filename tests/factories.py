@@ -18,14 +18,14 @@ Test Factory to make fake objects for testing
 import factory
 from datetime import datetime
 from factory.fuzzy import FuzzyChoice
-from service.models import Supplier, Products
+from service.models import Supplier, Product
 
 
 class ProductFactory(factory.Factory):
-    """ Creates fake Products """
+    """ Creates fake Product """
 
     class Meta:
-        model = Products
+        model = Product
 
     id = factory.Sequence(lambda n: n)
 #    supplier_id = ???
