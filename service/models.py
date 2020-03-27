@@ -57,8 +57,8 @@ class PersistentBase():
 
     @classmethod
     def all(cls):
-        """ Returns all of the Suppliers in the database """
-        logger.info("Processing all Suppliers")
+        """ Returns all of the Supplier in the database """
+        logger.info("Processing all Supplier")
         return cls.query.all()
 
     @classmethod

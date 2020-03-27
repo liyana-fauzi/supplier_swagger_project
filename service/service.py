@@ -210,7 +210,7 @@ def create_products(supplier_id):
     """
     app.logger.info("Request to add an product to an supplier")
     check_content_type("application/json")
-    supplier = Suppliers.find_or_404(supplier_id)
+    supplier = Supplier.find_or_404(supplier_id)
     product = Product()
     product.deserialize(request.get_json())
     supplier.products.append(product)
