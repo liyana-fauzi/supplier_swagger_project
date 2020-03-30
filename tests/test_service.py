@@ -10,7 +10,7 @@ import logging
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from flask_api import status  # HTTP Status Codes
-from service.models import db
+from service.models import db, DataValidationError
 from service.service import app, init_db
 from tests.factories import SupplierFactory, ProductFactory
 
@@ -273,3 +273,33 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data["id"], product_id)
         self.assertEqual(data["supplier_id"], supplier.id)
         self.assertEqual(data["name"], "XXXX")
+
+######################################################################
+#  FIND  T E S T   C A S E S
+######################################################################
+    def test_query_supplier_list_by_category(self):
+        """ Query Supplier by Category """
+        suppliers = self._create_suppliers(10)
+        test_category = suppliers[0].category
+        category_suppliers = [supplier for supplier in suppliers if supplier.category == test_category]
+        resp = self.app.get("/suppliers", query_string="category={}".format(test_category))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(category_suppliers))
+        # check the data just to be sure
+        for supplier in data:
+            self.assertEqual(supplier["category"], test_category)
+
+    @patch('service.models.Supplier.find_by_name')
+    def test_bad_request(self, bad_request_mock):
+        """ Test a Bad Request error from Find By Name """
+        bad_request_mock.side_effect = DataValidationError()
+        resp = self.app.get('/suppliers', query_string='name=Aikeeya')
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    @patch('service.models.Supplier.find_by_name')
+    def test_mock_search_data(self, supplier_find_mock):
+        """ Test showing how to mock data """
+        supplier_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'Aikeeya'})]
+        resp = self.app.get('/suppliers', query_string='name=fido')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)

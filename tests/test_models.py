@@ -2,9 +2,10 @@
 Test cases for Supplier Model
 
 """
+import os
 import logging
 import unittest
-import os
+from werkzeug.exceptions import NotFound
 from service.models import Supplier, Product, DataValidationError, db
 from service import app
 from tests.factories import SupplierFactory, ProductFactory
@@ -201,5 +202,90 @@ class TestSupplier(unittest.TestCase):
         product = supplier.products[0]
         self.assertEqual(product.desc, "XX")
 
+    def test_find_supplier(self):
+        """ Find a Supplier by ID """
+        suppliers = SupplierFactory.create_batch(3)
+        for supplier in suppliers:
+            supplier.create()
+        logging.debug(suppliers)
+        # make sure they got saved
+        self.assertEqual(len(Supplier.all()), 3)
+        # find the 2nd supplier in the list
+        supplier = Supplier.find(suppliers[1].id)
+        self.assertIsNot(supplier, None)
+        self.assertEqual(supplier.id, suppliers[1].id)
+        self.assertEqual(supplier.name, suppliers[1].name)
+        self.assertEqual(supplier.category, suppliers[1].category)
+        self.assertEqual(supplier.email, suppliers[1].email)
+        self.assertEqual(supplier.address, suppliers[1].address)
+        self.assertEqual(supplier.phone_number, suppliers[1].phone_number)
+
+    def test_find_by_category(self):
+        """ Find Suppliers by Category """
+        suppliers = SupplierFactory.create_batch(3)
+        suppliers[0].category="home furnishings"
+        suppliers[0].create()
+        suppliers[1].category="health & beauty"
+        suppliers[1].create()
+        suppliers[2].category="health & beauty"
+        suppliers[2].create()
+        results = Supplier.find_by_category("health & beauty")
+        logging.debug(results)
+        self.assertNotEqual(results, [])   
+        self.assertEqual(results[0].category, "health & beauty")
+
+
+    def test_find_by_name(self):
+        """ Find a Supplier by Name """
+        suppliers = SupplierFactory.create_batch(3)
+        for supplier in suppliers:
+            supplier.create()
+        results = Supplier.find_by_name(suppliers[0].name)
+        self.assertNotEqual(results, [])        
+        self.assertEqual(results[0].name, suppliers[0].name)
+        
+   
+    def test_find_by_address(self):
+        """ Find Suppliers by address """
+        suppliers = SupplierFactory.create_batch(3)
+        for supplier in suppliers:
+            supplier.create()
+        results = Supplier.find_by_address(suppliers[0].address)
+        self.assertNotEqual(results, [])
+        self.assertEqual(results[0].address, suppliers[0].address)
+
+
+    def test_find_by_email(self):
+        """ Find Suppliers by email """
+        suppliers = SupplierFactory.create_batch(3)
+        for supplier in suppliers:
+            supplier.create()
+        results = Supplier.find_by_email(suppliers[0].email)
+        self.assertNotEqual(results, [])   
+        self.assertEqual(results[0].email, suppliers[0].email)
+
+    def test_find_by_phone_number(self):
+        """ Find Suppliers by phone_number """
+        suppliers = SupplierFactory.create_batch(3)
+        for supplier in suppliers:
+            supplier.create()
+        results = Supplier.find_by_phone_number(suppliers[0].phone_number)
+        self.assertNotEqual(results, [])   
+        self.assertEqual(results[0].phone_number, suppliers[0].phone_number)
+
+    def test_find_or_404_found(self):
+        """ Find or return 404 found """
+        suppliers = SupplierFactory.create_batch(3)
+        for supplier in suppliers:
+            supplier.create()
+
+        supplier = Supplier.find_or_404(suppliers[1].id)
+        self.assertIsNot(supplier, None)
+        self.assertEqual(supplier.id, suppliers[1].id)
+        self.assertEqual(supplier.name, suppliers[1].name)
+       
+    def test_find_or_404_not_found(self):
+        """ Find or return 404 NOT found """
+        self.assertRaises(NotFound, Supplier.find_or_404, 0)
     
 
