@@ -215,3 +215,43 @@ class Supplier(db.Model, PersistentBase):
         return cls.query.filter(cls.name == name)
 
     #whoever is doing the query story should create more query model
+
+    @classmethod
+    def find_by_category(cls, category):
+        """ Returns all Suppliers with the given category
+
+        Args:
+            category (string): the category of the Suppliers you want to match
+        """
+        logger.info("Processing category query for %s ...", category)
+        return cls.query.filter(cls.category == category)
+
+    @classmethod
+    def find_by_address(cls, address):
+        """ Returns all Suppliers with the given address
+
+        Args:
+            address (string): the address of the Suppliers you want to match
+        """
+        logger.info("Processing address query for %s ...", address)
+        return cls.query.filter(cls.address == address)
+
+    @classmethod
+    def find_by_email(cls, email):
+        """ Returns all Suppliers with the given email
+
+        Args:
+            email (string): the email of the Suppliers you want to match
+        """
+        logger.info("Processing email query for %s ...", email)
+        return cls.query.filter(cls.email == email)
+
+    @classmethod
+    def find_by_phone_number(cls, phone_number):
+        """ Returns all Suppliers with the given phone_number
+
+        Args:
+            phone_number (string): the phone_number of the Suppliers you want to match
+        """
+        logger.info("Processing phone_number query for %s ...", phone_number)
+        return cls.query.filter(cls.phone_number == phone_number)    

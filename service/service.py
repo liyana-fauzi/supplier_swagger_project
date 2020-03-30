@@ -119,8 +119,11 @@ def list_suppliers():
     app.logger.info("Request for Supplier list")
     suppliers = []
     name = request.args.get("name")
+    category = request.args.get("category")
     if name:
         suppliers = Supplier.find_by_name(name)
+    elif category: 
+        suppliers = Supplier.find_by_category(category)
     else:
         suppliers = Supplier.all()
 
