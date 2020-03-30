@@ -144,6 +144,21 @@ def get_suppliers(supplier_id):
     return make_response(jsonify(supplier.serialize()), status.HTTP_200_OK)
 
 ######################################################################
+# RETRIEVE A SUPPLIER'S PRODUCTS
+######################################################################
+@app.route("/suppliers/<int:supplier_id>/products" , methods=["GET"])  #subordinate call
+def get_suppliers_products(supplier_id):
+    """
+    Retrieve a single Supplier's prpoducts
+    This endpoint will return a Supplier's products based on Supplier's id
+    """
+    app.logger.info("Request for Supplier's products for id: %s", supplier_id)
+    supplier = Supplier.find_or_404(supplier_id)
+    results = supplier.products
+    products = [product.serialize() for product in results]
+    return make_response(jsonify(products), status.HTTP_200_OK)
+
+######################################################################
 # CREATE A NEW SUPPLIER
 ######################################################################
 @app.route("/suppliers", methods=["POST"])

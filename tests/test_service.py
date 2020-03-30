@@ -274,6 +274,29 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data["supplier_id"], supplier.id)
         self.assertEqual(data["name"], "XXXX")
 
+    def test_get_supplier_products(self):
+        """ Get all products from a supplier """
+        supplier = self._create_suppliers(1)[0]
+        products = ProductFactory.create_batch(3)
+        for product in products:
+            resp = self.app.post(
+                "/suppliers/{}/products".format(supplier.id), 
+                json=product.serialize(), 
+                content_type="application/json"
+            )
+            self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        #get products back
+        resp = self.app.get(
+            "/suppliers/{}/products".format(supplier.id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(len(data), 3)
+   
+    
 ######################################################################
 #  FIND  T E S T   C A S E S
 ######################################################################
