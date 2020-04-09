@@ -10,9 +10,11 @@ from service.models import Supplier, Product, DataValidationError, db
 from service import app
 from tests.factories import SupplierFactory, ProductFactory
 
-DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
-)
+
+DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
+if 'VCAP_SERVICES' in os.environ:
+    vcap = json.loads(os.environ['VCAP_SERVICES'])
+    DATABASE_URI = vcap['user-provided'][0]['credentials']['url']
 
 ######################################################################
 #  S U P P L I E R S   M O D E L   T E S T   C A S E S
