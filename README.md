@@ -7,3 +7,6 @@ It should contain information about the supplier, and a collection of references
 that they provide. Its may also include the wholesale price of the products. Since this is really a
 collection of product items, you will need to implement a subordinate API to associate products
 into the suppliers collection (e.g., /suppliers/{id}/products).
+
+# nyu-travis-ci
+[![Build Status](https://travis-ci.com/devops-suppliers/suppliers.svg?branch=master)](https://travis-ci.com/devops-suppliers/suppliers)
