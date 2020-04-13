@@ -5,6 +5,18 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+
+# WARNING: You will need the following plugin:
+# vagrant plugin install vagrant-docker-compose
+if Vagrant.plugins_enabled?
+  unless Vagrant.has_plugin?('vagrant-docker-compose')
+    puts 'Plugin missing.'
+    system('vagrant plugin install vagrant-docker-compose')
+    puts 'Dependencies installed, please try the command again.'
+    exit
+  end
+end
+
 Vagrant.configure(2) do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
@@ -56,6 +68,11 @@ Vagrant.configure(2) do |config|
     config.vm.provision "file", source: "~/.vimrc", destination: "~/.vimrc"
   end
 
+  # Copy your IBM Cloud API Key if you have one
+  if File.exists?(File.expand_path("~/.suppliers/apiKey.json"))
+    config.vm.provision "file", source: "~/.suppliers/apiKey.json", destination: "~/.suppliers/apiKey.json"
+  end
+
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
@@ -83,5 +100,40 @@ Vagrant.configure(2) do |config|
     d.run "postgres:alpine",
        args: "-d --name postgres -p 5432:5432 -v psql_data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=postgres"
   end
+
+  ############################################################
+  # Add Docker compose
+  ############################################################
+  config.vm.provision :docker_compose
+  # config.vm.provision :docker_compose,
+  #   yml: "/vagrant/docker-compose.yml",
+  #   rebuild: true,
+  #   run: "always"
+
+  ######################################################################
+  # Setup a Bluemix and Kubernetes environment
+  ######################################################################
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "\n************************************"
+    echo " Installing IBM Cloud CLI..."
+    echo "************************************\n"
+    # Install IBM Cloud CLI as Vagrant user
+    sudo -H -u vagrant sh -c 'curl -sL http://ibm.biz/idt-installer | bash'
+    sudo -H -u vagrant sh -c 'ibmcloud config --usage-stats-collect false'
+    sudo -H -u vagrant sh -c 'ibmcloud cf install'
+    sudo -H -u vagrant sh -c "echo 'source <(kubectl completion bash)' >> ~/.bashrc"
+    sudo -H -u vagrant sh -c "echo alias ic=/usr/local/bin/ibmcloud >> ~/.bash_aliases"
+    echo "\n"
+    echo "If you have an IBM Cloud API key in ~/.suppliers/apiKey.json"
+    echo "You can login with the following command:"
+    echo "\n"
+    echo "ibmcloud login -a https://cloud.ibm.com --apikey @~/.suppliers/apiKey.json -r us-south"
+    echo "\n"
+    echo "\n************************************"
+    echo " For the Kubernetes Dashboard use:"
+    echo " kubectl proxy --address='0.0.0.0'"
+    echo "************************************\n"
+
+  SHELL
 
 end
