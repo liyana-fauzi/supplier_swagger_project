@@ -13,6 +13,7 @@ from flask_api import status  # HTTP Status Codes
 from service.models import db, DataValidationError
 from service.service import app, init_db
 from tests.factories import SupplierFactory, ProductFactory
+from urllib.parse import quote_plus
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
@@ -305,7 +306,7 @@ class TestYourResourceServer(TestCase):
         suppliers = self._create_suppliers(10)
         test_category = suppliers[0].category
         category_suppliers = [supplier for supplier in suppliers if supplier.category == test_category]
-        resp = self.app.get("/suppliers", query_string="category={}".format(test_category))
+        resp = self.app.get("/suppliers", query_string="category={}".format(quote_plus(test_category)))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(category_suppliers))
