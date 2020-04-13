@@ -10,3 +10,4 @@ into the suppliers collection (e.g., /suppliers/{id}/products).
 
 # nyu-travis-ci
 [![Build Status](https://travis-ci.com/devops-suppliers/suppliers.svg?branch=master)](https://travis-ci.com/devops-suppliers/suppliers)
+[![codecov](https://codecov.io/gh/devops-suppliers/suppliers/branch/master/graph/badge.svg)](https://codecov.io/gh/devops-suppliers/suppliers)
