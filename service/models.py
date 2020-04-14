@@ -156,6 +156,7 @@ class Supplier(db.Model, PersistentBase):
     address = db.Column(db.String(128))
     email = db.Column(db.String(63))
     phone_number = db.Column(db.String(32))
+    preferred = db.Column(db.String(32))
     products = relationship('Product', order_by = Product.id, backref=db.backref('Supplier'), lazy=True)
 
 
@@ -171,6 +172,7 @@ class Supplier(db.Model, PersistentBase):
             "address":self.address,
             "email":self.email,
             "phone_number":self.phone_number,
+            "preferred":self.preferred,
             "products": []
         }
         for product in self.products:
@@ -190,6 +192,7 @@ class Supplier(db.Model, PersistentBase):
             self.address = data["address"]
             self.email = data["email"]
             self.phone_number = data.get("phone_number")
+            self.preferred = data.get("preferred")
             #handle inner list of products
             product_list = data["products"]
             for json_product in product_list:
@@ -254,4 +257,14 @@ class Supplier(db.Model, PersistentBase):
             phone_number (string): the phone_number of the Suppliers you want to match
         """
         logger.info("Processing phone_number query for %s ...", phone_number)
-        return cls.query.filter(cls.phone_number == phone_number)    
+        return cls.query.filter(cls.phone_number == phone_number) 
+
+    @classmethod
+    def find_by_preferred(cls, preferred):
+        """ Returns all Suppliers with the preferred flag set
+
+        Args:
+            preferred (boolean): the preferred flag of the Suppliers you want to match
+        """
+        logger.info("Processing preferred flag query for %s ...", preferred)
+        return cls.query.filter(cls.preferred == preferred) 

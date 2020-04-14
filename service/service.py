@@ -120,6 +120,7 @@ def list_suppliers():
     suppliers = []
     name = request.args.get("name")
     category = request.args.get("category")
+    
     if name:
         suppliers = Supplier.find_by_name(name)
     elif category: 
@@ -211,6 +212,19 @@ def delete_suppliers(supplier_id):
     if suppliers:
         suppliers.delete()
     return make_response("", status.HTTP_204_NO_CONTENT)
+
+######################################################################
+# MARK A PREFERRED SUPPLIER
+######################################################################
+@app.route('/suppliers/<int:supplier_id>/preferred', methods=['PUT'])
+def preferred_suppliers(supplier_id):
+    """ Marking a supplier preferred """
+    supplier = Supplier.find(supplier_id)
+    if not supplier:
+        abort(status.HTTP_404_NOT_FOUND, "Supplier with id '{}' was not found.".format(supplier_id)) 
+    supplier.preferred = "True"
+    supplier.save()
+    return make_response(jsonify(supplier.serialize()), status.HTTP_200_OK)
 
 #---------------------------------------------------------------------
 #                P R O D U C T S   M E T H O D S

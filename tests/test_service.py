@@ -216,8 +216,34 @@ class TestYourResourceServer(TestCase):
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+    def test_mark_supplier_preference(self):
+        """ Mark a Preferred Supplier (action test) """
+        supplier = SupplierFactory.create_batch(1)
+        supplier[0].name="Erlich Bachman"
+        supplier[0].preferred="False"
+        supplier[0].create()
+        
+        resp = self.app.get('/suppliers/{}'.format(supplier[0].id), content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        logging.debug('data = %s', data)
+        #Ensure that preferred flag is false prior to action
+        self.assertEqual(data["preferred"], "False")
+
+        resp = self.app.put('/suppliers/{}/preferred'.format(supplier[0].id), content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        resp = self.app.get('/suppliers/{}'.format(supplier[0].id), content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        logging.debug('data = %s', data)
+        #Ensure that preferred flag is set to True after action
+        self.assertEqual(data["preferred"], "True")
+
 ######################################################################
-#  A D D R E S S   T E S T   C A S E S
+#  P R O D U C T S   T E S T   C A S E S
 ######################################################################
 
     def test_add_product(self):
@@ -329,3 +355,4 @@ class TestYourResourceServer(TestCase):
         supplier_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'Aikeeya'})]
         resp = self.app.get('/suppliers', query_string='name=fido')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
