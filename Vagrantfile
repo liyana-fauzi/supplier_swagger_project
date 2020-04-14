@@ -120,14 +120,14 @@ Vagrant.configure(2) do |config|
     # Install IBM Cloud CLI as Vagrant user
     sudo -H -u vagrant sh -c 'curl -sL http://ibm.biz/idt-installer | bash'
     sudo -H -u vagrant sh -c 'ibmcloud config --usage-stats-collect false'
-    sudo -H -u vagrant sh -c 'ibmcloud cf install'
+    sudo -H -u vagrant sh -c "ibmcloud cf install --version 6.46.1"
     sudo -H -u vagrant sh -c "echo 'source <(kubectl completion bash)' >> ~/.bashrc"
     sudo -H -u vagrant sh -c "echo alias ic=/usr/local/bin/ibmcloud >> ~/.bash_aliases"
     echo "\n"
     echo "If you have an IBM Cloud API key in ~/.suppliers/apiKey.json"
     echo "You can login with the following command:"
     echo "\n"
-    echo "ibmcloud login -a https://cloud.ibm.com --apikey @~/.suppliers/apiKey.json -r us-south"
+    echo "ibmcloud login -a https://cloud.ibm.com --apikey @~/.suppliers/apiKey.json -r us-south -o <org name> -s dev"
     echo "\n"
     echo "\n************************************"
     echo " For the Kubernetes Dashboard use:"

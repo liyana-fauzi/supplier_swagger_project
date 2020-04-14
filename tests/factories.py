@@ -47,4 +47,5 @@ class SupplierFactory(factory.Factory):
     address = factory.Faker("address")
     email = factory.Faker("email")
     phone_number = factory.Faker("phone_number")
+    preferred = FuzzyChoice(choices=["True", "False"])
     
