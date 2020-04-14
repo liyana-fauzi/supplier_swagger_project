@@ -8,6 +8,6 @@ that they provide. Its may also include the wholesale price of the products. Sin
 collection of product items, you will need to implement a subordinate API to associate products
 into the suppliers collection (e.g., /suppliers/{id}/products).
 
-# nyu-travis-ci
+# devOps-supplier-travis-ci
 [![Build Status](https://travis-ci.com/devops-suppliers/suppliers.svg?branch=master)](https://travis-ci.com/devops-suppliers/suppliers)
 [![codecov](https://codecov.io/gh/devops-suppliers/suppliers/branch/master/graph/badge.svg)](https://codecov.io/gh/devops-suppliers/suppliers)
