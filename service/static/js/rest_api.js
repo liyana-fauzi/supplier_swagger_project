@@ -7,20 +7,20 @@ $(function () {
     // Updates the form with data from the response
     function update_form_data(res) {
         $("#supplier_id").val(res._id);
-        $("#name").val(res.name);
-        $("#category").val(res.category);
+        $("#supplier_name").val(res.name);
+        $("#supplier_category").val(res.category);
         if (res.preferred == true) {
-            $("#preferred").val("true");
+            $("#supplier_preferred").val("true");
         } else {
-            $("#preferred").val("false");
+            $("#supplier_preferred").val("false");
         }
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#name").val("");
-        $("#category").val("");
-        $("#preferred").val("");
+        $("#suppler_name").val("");
+        $("#supplier_category").val("");
+        $("#Supplier_preferred").val("");
     }
 
     // Updates the flash message area
@@ -35,9 +35,9 @@ $(function () {
 
     $("#create-btn").click(function () {
 
-        var name = $("#name").val();
-        var category = $("#category").val();
-        var preferred = $("#preferred").val() == "true";
+        var name = $("#supplier_name").val();
+        var category = $("#supplier_category").val();
+        var preferred = $("#supplier_preferred").val() == "true";
 
         var data = {
             "name": name,
@@ -70,9 +70,9 @@ $(function () {
     $("#update-btn").click(function () {
 
         var supplier_id = $("#supplier_id").val();
-        var name = $("#name").val();
-        var category = $("#category").val();
-        var preferred = $("#preferred").val() == "true";
+        var name = $("#supplier_name").val();
+        var category = $("#supplier_category").val();
+        var preferred = $("#supplier_preferred").val() == "true";
 
         var data = {
             "name": name,
@@ -166,9 +166,9 @@ $(function () {
 
     $("#search-btn").click(function () {
 
-        var name = $("#name").val();
-        var category = $("#category").val();
-        var preferred = $("#preferred").val() == "true";
+        var name = $("#supplier_name").val();
+        var category = $("#supplier_category").val();
+        var preferred = $("#supplier_preferred").val() == "true";
 
         var queryString = ""
 
@@ -205,15 +205,15 @@ $(function () {
             header += '<th style="width:10%">ID</th>'
             header += '<th style="width:40%">Name</th>'
             header += '<th style="width:40%">Category</th>'
-            header += '<th style="width:10%">Available</th></tr>'
+            header += '<th style="width:10%">Preferred</th></tr>'
             $("#search_results").append(header);
             var firstSupplier = "";
             for(var i = 0; i < res.length; i++) {
                 var Supplier = res[i];
-                var row = "<tr><td>"+Supplier._id+"</td><td>"+Supplier.name+"</td><td>"+Supplier.category+"</td><td>"+Supplier.preferred+"</td></tr>";
+                var row = "<tr><td>"+supplier._id+"</td><td>"+supplier.name+"</td><td>"+supplier.category+"</td><td>"+supplier.preferred+"</td></tr>";
                 $("#search_results").append(row);
                 if (i == 0) {
-                    firstSupplier = Supplier;
+                    firstSupplier = supplier;
                 }
             }
 
