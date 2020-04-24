@@ -6,7 +6,7 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#supplier_id").val(res._id);
+        $("#supplier_id").val(res.id);
         $("#supplier_name").val(res.name);
         $("#supplier_category").val(res.category);
         if (res.preferred == true) {
@@ -18,9 +18,9 @@ $(function () {
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#suppler_name").val("");
+        $("#supplier_name").val("");
         $("#supplier_category").val("");
-        $("#Supplier_preferred").val("");
+        $("#supplier_preferred").val("");
     }
 
     // Updates the flash message area
@@ -42,7 +42,11 @@ $(function () {
         var data = {
             "name": name,
             "category": category,
-            "preferred": preferred
+            "preferred": preferred,
+            "email": "supplier@company.com",
+            "phone_number": "NA",
+            "address": "NA",
+            "products": []
         };
 
         var ajax = $.ajax({
@@ -77,7 +81,11 @@ $(function () {
         var data = {
             "name": name,
             "category": category,
-            "preferred": preferred
+            "preferred": preferred,
+            "email": "supplier@company.com",
+            "phone_number": "NA",
+            "address": "NA",
+            "products": []
         };
 
         var ajax = $.ajax({
@@ -209,8 +217,8 @@ $(function () {
             $("#search_results").append(header);
             var firstSupplier = "";
             for(var i = 0; i < res.length; i++) {
-                var Supplier = res[i];
-                var row = "<tr><td>"+supplier._id+"</td><td>"+supplier.name+"</td><td>"+supplier.category+"</td><td>"+supplier.preferred+"</td></tr>";
+                var supplier = res[i];
+                var row = "<tr><td>"+supplier.id+"</td><td>"+supplier.name+"</td><td>"+supplier.category+"</td><td>"+supplier.preferred+"</td></tr>";
                 $("#search_results").append(row);
                 if (i == 0) {
                     firstSupplier = supplier;
