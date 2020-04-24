@@ -199,6 +199,8 @@ class Supplier(db.Model, PersistentBase):
                 product = Product()
                 product.deserialize(json_product)
                 self.products.append(product)
+
+            
         except KeyError as error:
             raise DataValidationError("Invalid Supplier: missing " + error.args[0])
         except TypeError as error:

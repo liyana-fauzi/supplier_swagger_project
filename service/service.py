@@ -227,6 +227,23 @@ def preferred_suppliers(supplier_id):
     supplier.save()
     return make_response(jsonify(supplier.serialize()), status.HTTP_200_OK)
 
+######################################################################
+# DELETE ALL Suppliers
+######################################################################
+@app.route("/suppliers/clear", methods=["GET"])
+def delete_all_suppliers():
+    """ Returns IDs of the Suppliers """
+    app.logger.info("Request for Supplier list")
+    suppliers = []
+    id = request.args.get("id")
+    if id:
+        suppliers = Supplier.find(id)
+    else:
+        suppliers = Supplier.all()
+
+    results = [supplier.delete() for supplier in suppliers]
+    return make_response("", status.HTTP_204_NO_CONTENT)
+
 #---------------------------------------------------------------------
 #                P R O D U C T S   M E T H O D S
 #---------------------------------------------------------------------
