@@ -23,5 +23,31 @@ Scenario: Create a Supplier
     And I press the "create" button
     Then I should see the message "Success"
     
-    
+Scenario: Delete a Supplier
+    When I visit the "Home Page"
+    And I set the "name" to "David"
+    And I set the "category" to "health & beauty"
+    And I select "False" in the "Preferred" dropdown
+    And I press the "search" button
+    Then I should see "David" in the "name" field
+    And I should see "health & beauty" in the "category" field
+    When I copy the "Id" field
+    And I press the "clear" button
+    And I paste the "Id" field
+    And I press the "Delete" button
+    Then I should not see "David" in the results
 
+Scenario: Retrieve a Supplier
+    When I visit the "Home Page"
+    And I set the "name" to "David"
+    And I set the "category" to "health & beauty"
+    And I select "False" in the "Preferred" dropdown
+    And I press the "search" button
+    Then I should see "David" in the "name" field
+    And I should see "health & beauty" in the "category" field
+    When I copy the "Id" field
+    And I press the "clear" button
+    And I paste the "Id" field
+    And I press the "retrieve" button
+    Then I should see "David" in the "name" field
+    And I should see "health & beauty" in the "category" field
