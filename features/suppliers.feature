@@ -25,29 +25,30 @@ Scenario: Create a Supplier
     
 Scenario: Delete a Supplier
     When I visit the "Home Page"
-    And I set the "name" to "David"
-    And I set the "category" to "health & beauty"
+    And I set the "name" to "John"
+    And I set the "category" to "home & furnishing"
     And I select "False" in the "Preferred" dropdown
     And I press the "search" button
-    Then I should see "David" in the "name" field
-    And I should see "health & beauty" in the "category" field
+    Then I should see "John" in the "name" field
+    And I should see "home & furnishing" in the "category" field
     When I copy the "Id" field
     And I press the "clear" button
     And I paste the "Id" field
     And I press the "Delete" button
-    Then I should not see "David" in the results
+    And I paste the "Id" field
+    And I press the "search" button
+    Then I should not see "John" in the results
 
 Scenario: Retrieve a Supplier
     When I visit the "Home Page"
-    And I set the "name" to "David"
-    And I set the "category" to "health & beauty"
+    And I set the "name" to "John"
+    And I set the "category" to "home & furnishing"
     And I select "False" in the "Preferred" dropdown
     And I press the "search" button
-    Then I should see "David" in the "name" field
-    And I should see "health & beauty" in the "category" field
+    Then I should see "John" in the "name" field
+    And I should see "home & furnishing" in the "category" field
     When I copy the "Id" field
     And I press the "clear" button
     And I paste the "Id" field
     And I press the "retrieve" button
-    Then I should see "David" in the "name" field
-    And I should see "health & beauty" in the "category" field
+    Then I should see "John" in the "name" field
