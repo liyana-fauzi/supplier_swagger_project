@@ -38,3 +38,21 @@ Scenario: Query Supplier based on Category
     And I should not see "John" in the results
     And I should not see "Liyana" in the results    
 
+Scenario: Update a Supplier
+    When I visit the "Home Page"
+    And I set the "name" to "John"
+    And I press the "Search" button
+    Then I should see "John" in the "name" field
+    And I should see "home & furnishing" in the "Category" field
+    When I change "name" to "Fred"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "Fred" in the "name" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "Fred" in the results
+    Then I should not see "John" in the results
