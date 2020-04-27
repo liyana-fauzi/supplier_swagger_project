@@ -52,3 +52,18 @@ Scenario: Retrieve a Supplier
     And I paste the "Id" field
     And I press the "retrieve" button
     Then I should see "John" in the "name" field
+
+Scenario: List all suppliers
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "John" in the results
+    And I should see "Jane" in the results
+    And I should not see "Liyana" in the results
+
+Scenario: Query Supplier based on Category
+    When I visit the "Home Page"
+    And I set the "Category" to "apparel"
+    And I press the "Search" button
+    Then I should see "Jane" in the results
+    And I should not see "John" in the results
+    And I should not see "Liyana" in the results    
