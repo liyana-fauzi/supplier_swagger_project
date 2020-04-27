@@ -23,6 +23,36 @@ Scenario: Create a Supplier
     And I press the "create" button
     Then I should see the message "Success"
     
+Scenario: Delete a Supplier
+    When I visit the "Home Page"
+    And I set the "name" to "John"
+    And I set the "category" to "home & furnishing"
+    And I select "False" in the "Preferred" dropdown
+    And I press the "search" button
+    Then I should see "John" in the "name" field
+    And I should see "home & furnishing" in the "category" field
+    When I copy the "Id" field
+    And I press the "clear" button
+    And I paste the "Id" field
+    And I press the "Delete" button
+    And I paste the "Id" field
+    And I press the "search" button
+    Then I should not see "John" in the results
+
+Scenario: Retrieve a Supplier
+    When I visit the "Home Page"
+    And I set the "name" to "John"
+    And I set the "category" to "home & furnishing"
+    And I select "False" in the "Preferred" dropdown
+    And I press the "search" button
+    Then I should see "John" in the "name" field
+    And I should see "home & furnishing" in the "category" field
+    When I copy the "Id" field
+    And I press the "clear" button
+    And I paste the "Id" field
+    And I press the "retrieve" button
+    Then I should see "John" in the "name" field
+
 Scenario: List all suppliers
     When I visit the "Home Page"
     And I press the "Search" button
@@ -37,4 +67,3 @@ Scenario: Query Supplier based on Category
     Then I should see "Jane" in the results
     And I should not see "John" in the results
     And I should not see "Liyana" in the results    
-
