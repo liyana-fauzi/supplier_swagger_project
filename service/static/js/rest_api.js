@@ -241,4 +241,34 @@ $(function () {
 
     });
 
+
+
+    // ****************************************
+    // Mark a Supplier as Preferred
+    // ****************************************
+
+    $("#mark-preferred-btn").click(function () {
+
+        var supplier_id = $("#supplier_id").val();
+
+        var ajax = $.ajax({
+            type: "PUT",
+            url: "/suppliers/" + supplier_id + "/preferred",
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            //alert(res.toSource())
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            clear_form_data()
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+
 })

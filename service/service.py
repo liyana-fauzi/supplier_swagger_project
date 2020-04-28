@@ -223,14 +223,14 @@ def preferred_suppliers(supplier_id):
     supplier = Supplier.find(supplier_id)
     if not supplier:
         abort(status.HTTP_404_NOT_FOUND, "Supplier with id '{}' was not found.".format(supplier_id)) 
-    supplier.preferred = "True"
+    supplier.preferred = "true"
     supplier.save()
     return make_response(jsonify(supplier.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# DELETE ALL Suppliers
+# RESET Suppliers Database
 ######################################################################
-@app.route("/suppliers/clear", methods=["GET"])
+@app.route("/suppliers/reset", methods=["DELETE"])
 def delete_all_suppliers():
     """ Returns IDs of the Suppliers """
     app.logger.info("Request for Supplier list")
