@@ -22,7 +22,7 @@ WAIT_SECONDS = int(getenv('WAIT_SECONDS', '60'))
 def step_impl(context):
     """ Delete all Suppliers and load new ones """
     headers = {'Content-Type': 'application/json'}
-    context.resp = requests.get(context.base_url + '/suppliers/clear', headers=headers)
+    context.resp = requests.delete(context.base_url + '/suppliers/reset', headers=headers)
     expect(context.resp.status_code).to_equal(204)
     create_url = context.base_url + '/suppliers'
     for row in context.table:
@@ -82,26 +82,6 @@ def step_impl(context, message):
         )
     )
     expect(found).to_be(True)
-
-@when('I copy the "{element_name}" field')
-def step_impl(context, element_name):
-    element_id = 'supplier_' + element_name.lower()
-    # element = context.driver.find_element_by_id(element_id)
-    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
-        expected_conditions.presence_of_element_located((By.ID, element_id))
-    )
-    context.clipboard = element.get_attribute('value')
-    logging.info('Clipboard contains: %s', context.clipboard)
-
-@when('I paste the "{element_name}" field')
-def step_impl(context, element_name):
-    element_id = 'supplier_' + element_name.lower()
-    # element = context.driver.find_element_by_id(element_id)
-    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
-        expected_conditions.presence_of_element_located((By.ID, element_id))
-    )
-    element.clear()
-    element.send_keys(context.clipboard)
 
 #Button action
 @when('I press the "{button}" button')
@@ -169,5 +149,12 @@ def step_impl(context, element_name):
     )
     element.clear()
     element.send_keys(context.clipboard)
+
+@then('I should see "{text}" in the "{element_name}" dropdown')
+def step_impl(context, text, element_name):
+    element_id = 'supplier_' + element_name.lower()
+    element = Select(context.driver.find_element_by_id(element_id))
+    expect(element.first_selected_option.text).to_equal(text)
+
 
 

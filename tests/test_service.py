@@ -222,7 +222,7 @@ class TestYourResourceServer(TestCase):
         """ Mark a Preferred Supplier (action test) """
         supplier = SupplierFactory.create_batch(1)
         supplier[0].name="Erlich Bachman"
-        supplier[0].preferred="False"
+        supplier[0].preferred="false"
         supplier[0].create()
         
         resp = self.app.get('/suppliers/{}'.format(supplier[0].id), content_type='application/json')
@@ -230,7 +230,7 @@ class TestYourResourceServer(TestCase):
         data = resp.get_json()
         logging.debug('data = %s', data)
         #Ensure that preferred flag is false prior to action
-        self.assertEqual(data["preferred"], "False")
+        self.assertEqual(data["preferred"], "false")
 
         resp = self.app.put('/suppliers/{}/preferred'.format(supplier[0].id), content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -240,7 +240,21 @@ class TestYourResourceServer(TestCase):
         data = resp.get_json()
         logging.debug('data = %s', data)
         #Ensure that preferred flag is set to True after action
-        self.assertEqual(data["preferred"], "True")
+        self.assertEqual(data["preferred"], "true")
+
+    def test_reset_supplier_database(self):
+        """ RESET Suppliers Database """
+        supplier = SupplierFactory.create_batch(3)
+        resp = self.app.delete(
+            "/suppliers/reset", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get(
+            "/suppliers/{}", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 ######################################################################
 #  P R O D U C T S   T E S T   C A S E S

@@ -8,7 +8,7 @@ Background:
         | name | category | preferred |
         | John | home & furnishing | True |
         | Jane | apparel | False |
-        | Jack | apparel | True |
+        | Jack | apparel | False |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -86,4 +86,34 @@ Scenario: Update a Supplier
     And I press the "Search" button
     Then I should see "Fred" in the results
     Then I should not see "John" in the results
+
+Scenario: Mark a Supplier as Preferred
+    When I visit the "Home Page"
+    And I set the "name" to "Jane"
+    And I press the "Search" button
+    Then I should see "Jane" in the "name" field
+    And I should see "apparel" in the "Category" field
+    And I should see "False" in the "Preferred" dropdown
+    When I copy the "Id" field
+    And I press the "clear" button
+    And I paste the "Id" field
+    And I press the "mark-preferred" button
+    Then I should see the message "Success"
+    When I press the "clear" button
+    And I set the "name" to "Jane"
+    And I set the "Category" to "apparel"
+    And I press the "Search" button
+    Then I should see "Jane" in the results
+    And I should see "apparel" in the results
+    And I should see "true" in the results
+    And I should not see "false" in the results
+    
+
+
+    
+    
+
+
+
+
 

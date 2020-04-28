@@ -279,19 +279,19 @@ class TestSupplier(unittest.TestCase):
     def test_find_by_preferred(self):
         """ Find a Supplier by Preferred """
         suppliers = SupplierFactory.create_batch(3)
-        suppliers[0].preferred="False"
+        suppliers[0].preferred="false"
         suppliers[0].create()
         suppliers[1].name="Mark Jacob"
-        suppliers[1].preferred="True"
+        suppliers[1].preferred="true"
         suppliers[1].create()
-        suppliers[2].preferred="False"
+        suppliers[2].preferred="false"
         suppliers[2].create()
         
-        results = Supplier.find_by_preferred("True")
+        results = Supplier.find_by_preferred("true")
         logging.debug(results)
         self.assertNotEqual(results, [])
         self.assertEqual(results[0].name, "Mark Jacob")
-        self.assertEqual(results[0].preferred, "True")
+        self.assertEqual(results[0].preferred, "true")
 
     def test_find_or_404_found(self):
         """ Find or return 404 found """
