@@ -5,6 +5,7 @@ Test cases for Supplier Model
 import os
 import logging
 import unittest
+import json
 from werkzeug.exceptions import NotFound
 from service.models import Supplier, Product, DataValidationError, db
 from service import app
