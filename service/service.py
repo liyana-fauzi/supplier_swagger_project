@@ -406,21 +406,6 @@ def get_suppliers_products(supplier_id):
 
 
 
-######################################################################
-# DELETE A SUPPLIER
-######################################################################
-@app.route("/suppliers/<int:supplier_id>", methods=["DELETE"])
-def delete_suppliers(supplier_id):
-    """
-    Delete a Supplier
-    This endpoint will delete a Supplier based the id specified in the path
-    """
-    app.logger.info("Request to delete supplier with id: %s", supplier_id)
-    suppliers = Supplier.find(supplier_id)
-    if suppliers:
-        suppliers.delete()
-    return make_response("", status.HTTP_204_NO_CONTENT)
-
 
 
 
