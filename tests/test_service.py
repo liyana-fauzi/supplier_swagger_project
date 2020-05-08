@@ -257,117 +257,117 @@ class TestYourResourceServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-######################################################################
-#  P R O D U C T S   T E S T   C A S E S
-######################################################################
+# """ ######################################################################
+# #  P R O D U C T S   T E S T   C A S E S
+# ######################################################################
 
-    def test_add_product(self):
-        """ Add an product to a supplier """
-        supplier = self._create_suppliers(1)[0]
-        product = ProductFactory()
-        resp = self.app.post(
-            "/suppliers/{}/products".format(supplier.id), 
-            json=product.serialize(), 
-            content_type="application/json"
-        )
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        data = resp.get_json()
-        logging.debug(data)
-        self.assertEqual(data["supplier_id"], supplier.id)
-        self.assertEqual(data["name"], product.name)
-        self.assertEqual(data["desc"], product.desc)
-        self.assertEqual(data["wholesale_price"], product.wholesale_price)
-        self.assertEqual(data["quantity"], product.quantity)
+# #    def test_add_product(self):
+# #        """ Add an product to a supplier """
+# #        supplier = self._create_suppliers(1)[0]
+# #        product = ProductFactory()
+# #        resp = self.app.post(
+# #            "/suppliers/{}/products".format(supplier.id), 
+# #            json=product.serialize(), 
+# #            content_type="application/json"
+# #        )
+# #        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+# #        data = resp.get_json()
+# #        logging.debug(data)
+# #        self.assertEqual(data["supplier_id"], supplier.id)
+# #        self.assertEqual(data["name"], product.name)
+# #        self.assertEqual(data["desc"], product.desc)
+# #        self.assertEqual(data["wholesale_price"], product.wholesale_price)#
+# #        self.assertEqual(data["quantity"], product.quantity)
         
     
-    def test_update_products(self):
-        """ Update a product on a supplier """
-        # create a known product
-        supplier = self._create_suppliers(1)[0]
-        product = ProductFactory()
-        resp = self.app.post(
-            "/suppliers/{}/products".format(supplier.id), 
-            json=product.serialize(), 
-            content_type="application/json"
-        )
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+# #    def test_update_products(self):
+#         """ Update a product on a supplier """
+#         # create a known product
+#         supplier = self._create_suppliers(1)[0]
+#         product = ProductFactory()
+#         resp = self.app.post(
+#             "/suppliers/{}/products".format(supplier.id), 
+#             json=product.serialize(), 
+#             content_type="application/json"
+#         )
+#         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+# ###
+#         data = resp.get_json()
+#         logging.debug(data)
+#         product_id = data["id"]
+#         data["name"] = "XXXX"
 
-        data = resp.get_json()
-        logging.debug(data)
-        product_id = data["id"]
-        data["name"] = "XXXX"
+#         # send the update back
+#         resp = self.app.put(
+#             "/suppliers/{}/products/{}".format(supplier.id, product_id), 
+#             json=data, 
+#             content_type="application/json"
+#         )
+#         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-        # send the update back
-        resp = self.app.put(
-            "/suppliers/{}/products/{}".format(supplier.id, product_id), 
-            json=data, 
-            content_type="application/json"
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+#         # retrieve it back
+#         resp = self.app.get(
+#             "/suppliers/{}/products/{}".format(supplier.id, product_id), 
+#             content_type="application/json"
+#         )
+#         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-        # retrieve it back
-        resp = self.app.get(
-            "/suppliers/{}/products/{}".format(supplier.id, product_id), 
-            content_type="application/json"
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+#         data = resp.get_json()
+#         logging.debug(data)
+#         self.assertEqual(data["id"], product_id)
+#         self.assertEqual(data["supplier_id"], supplier.id)
+#         self.assertEqual(data["name"], "XXXX")
 
-        data = resp.get_json()
-        logging.debug(data)
-        self.assertEqual(data["id"], product_id)
-        self.assertEqual(data["supplier_id"], supplier.id)
-        self.assertEqual(data["name"], "XXXX")
+#     def test_get_supplier_products(self):
+#         """ Get all products from a supplier """
+#         supplier = self._create_suppliers(1)[0]
+#         products = ProductFactory.create_batch(3)
+#         for product in products:
+#             resp = self.app.post(
+#                 "/suppliers/{}/products".format(supplier.id), 
+#                 json=product.serialize(), 
+#                 content_type="application/json"
+#             )
+#             self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+#         #get products back
+#         resp = self.app.get(
+#             "/suppliers/{}/products".format(supplier.id), 
+#             content_type="application/json"
+#         )
+#         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-    def test_get_supplier_products(self):
-        """ Get all products from a supplier """
-        supplier = self._create_suppliers(1)[0]
-        products = ProductFactory.create_batch(3)
-        for product in products:
-            resp = self.app.post(
-                "/suppliers/{}/products".format(supplier.id), 
-                json=product.serialize(), 
-                content_type="application/json"
-            )
-            self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        #get products back
-        resp = self.app.get(
-            "/suppliers/{}/products".format(supplier.id), 
-            content_type="application/json"
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        data = resp.get_json()
-        logging.debug(data)
-        self.assertEqual(len(data), 3)
-   
+#         data = resp.get_json()
+#         logging.debug(data)
+#         self.assertEqual(len(data), 3)
+#     """
     
-######################################################################
-#  FIND  T E S T   C A S E S
-######################################################################
-    def test_query_supplier_list_by_category(self):
-        """ Query Supplier by Category """
-        suppliers = self._create_suppliers(10)
-        test_category = suppliers[0].category
-        category_suppliers = [supplier for supplier in suppliers if supplier.category == test_category]
-        resp = self.app.get("/suppliers", query_string="category={}".format(quote_plus(test_category)))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(category_suppliers))
-        # check the data just to be sure
-        for supplier in data:
-            self.assertEqual(supplier["category"], test_category)
+# ######################################################################
+# #  FIND  T E S T   C A S E S
+# ######################################################################
+#     def test_query_supplier_list_by_category(self):
+#         """ Query Supplier by Category """
+#         suppliers = self._create_suppliers(10)
+#         test_category = suppliers[0].category
+#         category_suppliers = [supplier for supplier in suppliers if supplier.category == test_category]
+#         resp = self.app.get("/suppliers", query_string="category={}".format(quote_plus(test_category)))
+#         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+#         data = resp.get_json()
+#         self.assertEqual(len(data), len(category_suppliers))
+#         # check the data just to be sure
+#         for supplier in data:
+#             self.assertEqual(supplier["category"], test_category)
 
-    @patch('service.models.Supplier.find_by_name')
-    def test_bad_request(self, bad_request_mock):
-        """ Test a Bad Request error from Find By Name """
-        bad_request_mock.side_effect = DataValidationError()
-        resp = self.app.get('/suppliers', query_string='name=Aikeeya')
-        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+#     @patch('service.models.Supplier.find_by_name')
+#     def test_bad_request(self, bad_request_mock):
+#         """ Test a Bad Request error from Find By Name """
+#         bad_request_mock.side_effect = DataValidationError()
+#         resp = self.app.get('/suppliers', query_string='name=Aikeeya')
+#         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
     
-    @patch('service.models.Supplier.find_by_name')
-    def test_mock_search_data(self, supplier_find_mock):
-        """ Test showing how to mock data """
-        supplier_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'Aikeeya'})]
-        resp = self.app.get('/suppliers', query_string='name=fido')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+#     @patch('service.models.Supplier.find_by_name')
+#     def test_mock_search_data(self, supplier_find_mock):
+#         """ Test showing how to mock data """
+#         supplier_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'Aikeeya'})]
+#         resp = self.app.get('/suppliers', query_string='name=fido')
+#         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
