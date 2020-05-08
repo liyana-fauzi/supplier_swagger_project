@@ -20,7 +20,7 @@ from functools import wraps
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from flask_api import status  # HTTP Status Codes
 from flask_restplus import Api, Resource, fields, reqparse, inputs
-
+from werkzeug.utils import cached_property
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
