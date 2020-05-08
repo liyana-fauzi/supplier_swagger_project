@@ -390,17 +390,17 @@ def index():
 ######################################################################
 # RETRIEVE A SUPPLIER'S PRODUCTS
 ######################################################################
-@app.route("/suppliers/<int:supplier_id>/products" , methods=["GET"])  #subordinate call
-def get_suppliers_products(supplier_id):
-    """
-    Retrieve a single Supplier's prpoducts
-    This endpoint will return a Supplier's products based on Supplier's id
-    """
-    app.logger.info("Request for Supplier's products for id: %s", supplier_id)
-    supplier = Supplier.find_or_404(supplier_id)
-    results = supplier.products
-    products = [product.serialize() for product in results]
-    return make_response(jsonify(products), status.HTTP_200_OK)
+#@app.route("/suppliers/<int:supplier_id>/products" , methods=["GET"])  #subordinate call
+#def get_suppliers_products(supplier_id):
+#    """
+#    Retrieve a single Supplier's prpoducts
+#    This endpoint will return a Supplier's products based on Supplier's id
+#    """
+#    app.logger.info("Request for Supplier's products for id: %s", supplier_id)
+#    supplier = Supplier.find_or_404(supplier_id)
+#    results = supplier.products
+#    products = [product.serialize() for product in results]
+#    return make_response(jsonify(products), status.HTTP_200_OK)
 
 
 
@@ -417,54 +417,54 @@ def get_suppliers_products(supplier_id):
 ######################################################################
 # ADD AN ADDRESS TO AN ACCOUNT
 ######################################################################
-@app.route('/suppliers/<int:supplier_id>/products', methods=['POST'])
-def create_products(supplier_id):
-    """
-    Create a Product on a Supplier
+#@app.route('/suppliers/<int:supplier_id>/products', methods=['POST'])
+#def create_products(supplier_id):
+#    """
+#    Create a Product on a Supplier#
 
-    This endpoint will add a product to a supplier
-    """
-    app.logger.info("Request to add an product to an supplier")
-    check_content_type("application/json")
-    supplier = Supplier.find_or_404(supplier_id)
-    product = Product()
-    product.deserialize(request.get_json())
-    supplier.products.append(product)
-    supplier.save()
-    message = product.serialize()
-    return make_response(jsonify(message), status.HTTP_201_CREATED)
+#    This endpoint will add a product to a supplier
+#    """
+#    app.logger.info("Request to add an product to an supplier")
+#    check_content_type("application/json")
+#    supplier = Supplier.find_or_404(supplier_id)
+#    product = Product()
+#    product.deserialize(request.get_json())
+#    supplier.products.append(product)
+#    supplier.save()
+#    message = product.serialize()
+#    return make_response(jsonify(message), status.HTTP_201_CREATED)
 
 #####################################################################
 # RETRIEVE A PRODUCT FROM SUPPLIER
 ######################################################################
-@app.route('/suppliers/<int:supplier_id>/products/<int:product_id>', methods=['GET'])
-def get_products(supplier_id, product_id):
-    """
-    Get a Product
+#@app.route('/suppliers/<int:supplier_id>/products/<int:product_id>', methods=['GET'])
+#def get_products(supplier_id, product_id):
+#    """
+#    Get a Product
 
-    This endpoint returns just a product
-    """
-    app.logger.info("Request to get a product with id: %s", product_id)
-    product = Product.find_or_404(product_id)
-    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
+#    This endpoint returns just a product
+#    """
+#    app.logger.info("Request to get a product with id: %s", product_id)
+#    product = Product.find_or_404(product_id)
+#    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # UPDATE A PRODUCT
 ######################################################################
-@app.route("/suppliers/<int:supplier_id>/products/<int:product_id>", methods=["PUT"])
-def update_products(supplier_id, product_id):
-    """
-    Update a Product
+#@app.route("/suppliers/<int:supplier_id>/products/<int:product_id>", methods=["PUT"])
+#def update_products(supplier_id, product_id):
+#    """
+#    Update a Product
 
-    This endpoint will update a Product based the body that is posted
-    """
-    app.logger.info("Request to update product with id: %s", product_id)
-    check_content_type("application/json")
-    product = Product.find_or_404(product_id)
-    product.deserialize(request.get_json())
-    product.id = product_id
-    product.save()
-    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
+#    This endpoint will update a Product based the body that is posted
+#    """
+#    app.logger.info("Request to update product with id: %s", product_id)
+#    check_content_type("application/json")
+#    product = Product.find_or_404(product_id)
+#    product.deserialize(request.get_json())
+#    product.id = product_id
+#    product.save()
+#    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
