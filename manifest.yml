@@ -1,7 +1,7 @@
 ---
 # This manifest deploys a Python Flask application with a ElephantSQL database
 applications:
-- name: nyu-supplier-service-s20
+- name: lab-bluemix-liyana
   path: .
   instances: 1
   memory: 128M
