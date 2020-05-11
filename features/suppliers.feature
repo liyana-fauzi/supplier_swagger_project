@@ -27,7 +27,7 @@ Scenario: Delete a Supplier
     When I visit the "Home Page"
     And I set the "name" to "John"
     And I set the "category" to "home & furnishing"
-    And I select "False" in the "Preferred" dropdown
+    And I select "True" in the "Preferred" dropdown
     And I press the "search" button
     Then I should see "John" in the "name" field
     And I should see "home & furnishing" in the "category" field
@@ -43,7 +43,7 @@ Scenario: Retrieve a Supplier
     When I visit the "Home Page"
     And I set the "name" to "John"
     And I set the "category" to "home & furnishing"
-    And I select "False" in the "Preferred" dropdown
+    And I select "True" in the "Preferred" dropdown
     And I press the "search" button
     Then I should see "John" in the "name" field
     And I should see "home & furnishing" in the "category" field
